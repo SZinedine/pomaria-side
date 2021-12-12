@@ -1,6 +1,6 @@
 ----------------------------------
 -- Author:      Zineddine SAIBI
--- Software:    Auzia-conky
+-- Software:    Pomaria-Side
 -- Type:        Conky Theme
 -- License:     GPL-3.0
 -- repository:  https://www.github.com/SZinedine/pomaria-side
@@ -90,13 +90,8 @@ function draw_cpu()
     write(670, 170, "cpu3", 12, main_text_color)
     write(670, 210, "cpu4", 12, main_text_color)
 
-    -- if not display_text then return end
     -- processes list by cpu consemption
-    local yy = settings.cpu.y
-    for i = 1, 7 do
-        write(settings.cpu.x-settings.cpu.width*2, yy, getProcessN(i), 12, main_text_color)
-        yy = yy +20
-    end
+    write_list_proccesses_cpu(settings.cpu.x-settings.cpu.width*2, settings.cpu.y, 20, 7, 12, main_text_color)
 end
 
 
@@ -115,7 +110,6 @@ function draw_memory()
     write(settings.cpu.x-settings.line.width1-30, settings.cpu.y_total+100, swapperc .. "%", 12, main_text_color)
 
     write_list_proccesses_mem(settings.cpu.x-settings.cpu.width*2, settings.mem.y_swap-10, 20, 6, 12, main_text_color)
-
 end
 
 
@@ -149,7 +143,6 @@ function draw_net()
     write(settings.net.down_x - settings.line.width1-30, settings.net.down_y, download_speed(), 12, main_text_color)
     write(settings.net.down_x - settings.line.width1-30, settings.net.up_y, upload_speed(), 12, main_text_color)
 
-    -- if not display_text then return end
     local netinfo = {}
     table.insert(netinfo, "SSID:        " .. ssid())
     table.insert(netinfo, "Wifi Signal: " .. wifi_signal() .. "%")
@@ -158,11 +151,7 @@ function draw_net()
     end
     table.insert(netinfo, "Local IP:    " .. local_ip())
 
-    local yy = settings.net.text_y
-    for i in pairs(netinfo) do
-        write(settings.net.text_x, yy, netinfo[i], 12, main_text_color)
-        yy = yy + 20
-    end
+    write_line_by_line(settings.net.text_x, settings.net.text_y, 20, netinfo, main_text_color, 12, false)
 end
 
 
@@ -183,10 +172,6 @@ end
 
 
 function draw_info()
-    -- if not display_text then return end
-    infotext_x = settings.net.text_x
-    infotext_y = 630
-
     local vals = {
         "Uptime:    " .. uptime(),
         string.format("Desktop:   %s/%s", desktop(), desktops()),
@@ -194,12 +179,7 @@ function draw_info()
         "    Read:  " .. diskio_read(""),
         "    Write: " .. diskio_write(""),
     }
-
-    local yy = infotext_y
-    for i in pairs(vals) do
-        write(infotext_x, yy, vals[i], 12, main_text_color)
-        yy = yy + 20
-    end
+    write_line_by_line(settings.net.text_x, 630, 20, vals, main_text_color, 12, false)
 end
 
 

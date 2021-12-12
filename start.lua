@@ -150,12 +150,13 @@ function draw_net()
     write(settings.net.down_x - settings.line.width1-30, settings.net.up_y, upload_speed(), 12, main_text_color)
 
     -- if not display_text then return end
-    local netinfo = {
-        "SSID:        " .. ssid(),
-        "Wifi Signal: " .. wifi_signal() .. "%",
-        "Public IP:   " .. public_ip,
-        "Local IP:    " .. local_ip(),
-    }
+    local netinfo = {}
+    table.insert(netinfo, "SSID:        " .. ssid())
+    table.insert(netinfo, "Wifi Signal: " .. wifi_signal() .. "%")
+    if use_public_ip then
+        table.insert(netinfo, "Public IP:   " .. public_ip)
+    end
+    table.insert(netinfo, "Local IP:    " .. local_ip())
 
     local yy = settings.net.text_y
     for i in pairs(netinfo) do
@@ -214,11 +215,11 @@ function conky_main()
                                          conky_window.height)
     cr = cairo_create(cs)
 
-    local updates = tonumber(updates())
-    if updates > 0 then
-        if fetch_public_ip then
-            -- check the ip adress every x seconds (check the variable public_ip_refresh_rate)
-            if public_ip == nil or (updates%public_ip_refresh_rate) == 0 then
+    local number_updates = tonumber(updates())
+    if number_updates > 0 then
+        if use_public_ip then
+            -- check the ip adress every x seconds (check the variable public_ip_refresh_rate, default: 60 seconde)
+            if public_ip == nil or public_ip == "None" or (number_updates%public_ip_refresh_rate) == 0 then
                 public_ip = fetch_public_ip()
             end
         end

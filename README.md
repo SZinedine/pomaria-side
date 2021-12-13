@@ -35,7 +35,7 @@ More colors schemes are available. Choose a color from the `settings.lua` file a
 ***
 
 
-## Download and Launch Auzia
+## Download and Launch
 
 ```sh
 git clone https://www.github.com/SZinedine/pomaria-side

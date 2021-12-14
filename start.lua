@@ -61,11 +61,11 @@ end
 
 function draw_cpu()
     local acpitemp = cpu_temperature()
-    local cpu = cpu_percent()
-    local cpu1 = cpu_percent(1)
-    local cpu2 = cpu_percent(2)
-    local cpu3 = cpu_percent(3)
-    local cpu4 = cpu_percent(4)
+    local cpu      = cpu_percent()
+    local cpu1     = cpu_percent(1)
+    local cpu2     = cpu_percent(2)
+    local cpu3     = cpu_percent(3)
+    local cpu4     = cpu_percent(4)
 
     rectangle_rightleft(settings.cpu.x, settings.cpu.y_temp, settings.cpu.width_temp, settings.line.thickness, acpitemp, 100, color_frompercent(tonumber(acpitemp)))
     rectangle_rightleft(settings.cpu.x, settings.cpu.y1, settings.cpu.width, settings.line.thickness, cpu1, 100, color_frompercent(tonumber(cpu1)))
@@ -77,10 +77,10 @@ function draw_cpu()
     -- cpu values
     write(settings.cpu.x-settings.cpu.width_temp-35, settings.cpu.y-settings.cpu.y_interval+3, acpitemp .. "°C", 12, main_text_color)
     write(settings.cpu.x-settings.cpu.width_temp-30, settings.cpu.y_total, cpu .. "%", 12, main_text_color)
-    write(settings.cpu.x_values, settings.cpu.y1+5, cpu1.. "%", 12, main_text_color)
-    write(settings.cpu.x_values, settings.cpu.y2+5, cpu2.. "%", 12, main_text_color)
-    write(settings.cpu.x_values, settings.cpu.y3+5, cpu3.. "%", 12, main_text_color)
-    write(settings.cpu.x_values, settings.cpu.y4+5, cpu4.. "%", 12, main_text_color)
+    write(settings.cpu.x_values, settings.cpu.y1+5, cpu1 .. "%", 12, main_text_color)
+    write(settings.cpu.x_values, settings.cpu.y2+5, cpu2 .. "%", 12, main_text_color)
+    write(settings.cpu.x_values, settings.cpu.y3+5, cpu3 .. "%", 12, main_text_color)
+    write(settings.cpu.x_values, settings.cpu.y4+5, cpu4 .. "%", 12, main_text_color)
 
     -- cpu titles
     write(settings.cpu.x-90, settings.cpu.y_temp-10, "temperature", 12, main_text_color)
@@ -96,13 +96,14 @@ end
 
 
 function draw_memory()
-    local memperc = memory_percent()
+    local memperc  = memory_percent()
     local swapperc = swap_percent()
+    local mem      = string.format("RAM: %s / %s", memory(), memory_max())
+    local swp      = string.format("Swap: %s / %s", swap(), swap_max())
 
     rectangle_rightleft(settings.mem.x, settings.mem.y_ram, settings.line.width3, settings.line.thickness, memperc, 100, color_frompercent(tonumber(memperc)))
     rectangle_rightleft(settings.mem.x, settings.mem.y_swap, settings.line.width1, settings.line.thickness, swapperc, 100, color_frompercent(tonumber(swapperc)))
-    local mem  = string.format("RAM: %s / %s", memory(), memory_max())
-    local swp = string.format("Swap: %s / %s", swap(), swap_max())
+
     write(settings.cpu.x-180, settings.cpu.y_total+50, mem, 12, main_text_color)
     write(settings.cpu.x-180, settings.cpu.y_total+90, swp, 12, main_text_color)
 
@@ -114,8 +115,8 @@ end
 
 
 function draw_disks()
-    local rt = string.format("root:  %s / %s", fs_used("/"), fs_size("/"))
-    local hm = string.format("/home:  %s / %s", fs_used("/home"), fs_size("/home"))
+    local rt     = string.format("root:  %s / %s", fs_used("/"), fs_size("/"))
+    local hm     = string.format("/home:  %s / %s", fs_used("/home"), fs_size("/home"))
     local rtperc = fs_used_perc("/")
     local hmperc = fs_used_perc("/home")
 
@@ -130,16 +131,11 @@ end
 
 
 function draw_net()
-    local dspd = download_speed_kb()
-    local uspd = upload_speed_kb()
-    local dtotal = download_total()
-    local utotal = upload_total()
+    rectangle_rightleft(settings.net.down_x, settings.net.down_y, settings.line.width1, settings.line.thickness, download_speed_kb(), download_rate_maximum, main_fg)
+    rectangle_rightleft(settings.net.down_x, settings.net.up_y, settings.line.width1, settings.line.thickness, upload_speed_kb(), upload_rate_maximum, main_fg)
 
-    rectangle_rightleft(settings.net.down_x, settings.net.down_y, settings.line.width1, settings.line.thickness, dspd, download_rate_maximum, main_fg)
-    rectangle_rightleft(settings.net.down_x, settings.net.up_y, settings.line.width1, settings.line.thickness, uspd, upload_rate_maximum, main_fg)
-
-    write(settings.net.down_x - 150, settings.net.down_y-10, "download: ".. dtotal, 12, main_text_color)
-    write(settings.net.down_x - 150, settings.net.up_y-10, "upload: " .. utotal, 12, main_text_color)
+    write(settings.net.down_x - 150, settings.net.down_y-10, "download: ".. download_total(), 12, main_text_color)
+    write(settings.net.down_x - 150, settings.net.up_y-10, "upload: " .. upload_total(), 12, main_text_color)
     write(settings.net.down_x - settings.line.width1-30, settings.net.down_y, download_speed(), 12, main_text_color)
     write(settings.net.down_x - settings.line.width1-30, settings.net.up_y, upload_speed(), 12, main_text_color)
 
@@ -196,9 +192,8 @@ function conky_main()
     cr = cairo_create(cs)
 
     local number_updates = tonumber(updates())
-    if number_updates > 0 then
+    if number_updates > time_before_start then
         if use_public_ip then
-            -- check the ip adress every x seconds (check the variable public_ip_refresh_rate, default: 60 seconde)
             if public_ip == nil or public_ip == "None" or (number_updates%public_ip_refresh_rate) == 0 then
                 public_ip = fetch_public_ip()
             end

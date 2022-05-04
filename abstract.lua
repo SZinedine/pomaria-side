@@ -2,14 +2,13 @@
 -- Author:      Zineddine SAIBI
 -- Software:    Namoudaj Conky
 -- Type:        Template for Conky
--- Version:     0.2 (11 Dec 2021)
+-- Version:     0.4
 -- License:     GPL-3.0
 -- Repository:  https://www.github.com/SZinedine/namoudaj-conky
 ----------------------------------
 
 require "cairo"
 require "imlib2"
-require "settings"
 
 
 function image(x, y, file)
@@ -197,7 +196,7 @@ function color_frompercent(percent)
     local perc = tonumber(percent)
     if     perc > threshold_critical then return color_critical
     elseif perc > threshold_warning  then return color_warning
-    else                                     return color_normal
+    else                                  return main_fg
     end
 end
 
@@ -283,8 +282,8 @@ function diskio_read(device)    return parse("diskio_read " .. device) end
 function diskio_write(device)   return parse("diskio_write " .. device) end
 function cpu_temperature()      return parse("acpitemp") end                --  temperature in C°
 function cpu_percent(n)
-    if n == nil or n == "" then return parse("cpu") end
-    if n > 0 and n <= 8    then return parse("cpu cpu" .. n)
+    if n == nil or n == 0 or n == "" then return parse("cpu") end
+    if n > 0 and n <= 32    then return parse("cpu cpu" .. n)
     else                        return nil end
 end
 function fs_used(fs)
@@ -312,22 +311,52 @@ function fs_free(fs)
     else                        return parse("fs_free " .. fs)
     end
 end
-function fetch_public_ip()
-    local po = io.popen("wget http://ipinfo.io/ip -qO -")
-    -- local po = io.popen("curl -s ifconfig.me/ip")
-    -- local po = io.popen("curl -s ident.me")
-    -- local po = io.popen("curl -s api.ipify.org")
-    local content = po:read("*a")
-    if content == nil or content == "" or string.len(content) > 15  then
-        return "None"
-    else
-        return content
+
+
+public_ip = nil     -- variable that will hold the IP adress
+function get_public_ip() 
+    if public_ip then return public_ip end
+    return ""
+end
+function set_public_ip(ip) 
+    if not ip then public_ip = "No Address"
+    else public_ip = tostring(ip)
     end
 end
 
+--[[
+    Don't call this function every seconde because it is slow and public IP doesn't change much anyway.
+    Warning: if your internet connection is disfunctioning, this function may prevent the whole conky from launching
+]]
+function update_public_ip()
+    if not use_public_ip then
+        print("Warning: Turn on the variable use_public_ip (set it to true) in settings.lua before calling the function update_public_ip()")
+        public_ip = nil
+    end
 
--- The following will define multiple variables and functions according to the machine where it is ran
--- the default value is a nil, so it is necessary to check in case you want to use the second battery.
+    -- fetch IP from the internet. other websites: "ifconfig.me/ip", "ident.me", "api.ipify.org"
+    local file = io.popen("curl -s http://ipinfo.io/ip") 
+    if not file then
+        set_public_ip(nil)
+        return nil
+    end
+
+    local output = file:read("*a")
+    file:close()
+    if output == nil or output == "" or string.len(output) > 15  then
+        set_public_ip(nil)
+        return nil
+    end
+
+    set_public_ip(output)
+    return output
+end
+
+
+--[[
+    The following will define multiple variables and functions according to the machine where it is ran
+    the default value is a nil, so it is necessary to check in case you want to use the second battery.
+]]
 has_battery        = nil   -- boolean
 has_second_battery = nil   -- boolean
 battery1_percent   = nil   -- function for the first battery. nil if it doesn't exist
@@ -336,22 +365,39 @@ battery_percent    = nil   -- function that returns the value of the battery. ad
 battery1_index     = nil   -- index of the first battery. nil if there is no battery. This is the number that follows 'BAT' ex: 'BAT0'
 battery2_index     = nil   -- index of the second battery. nil if there is no battery or no second battery
 discharging_battery = function() return false end  -- check if the battery is discharging or not
+initialized_battery = false -- check if the function `init_battery()` has already been called
+local called_init_battery_once = false -- sometimes, conky doesn't detect the battery the first time we require it.
 
--- check if there is a battery or multiple batteries
--- define the functions that return battery values
--- define discharging_battery() according to the number of batteries
-local function init_battery()
+--[[
+    check if there is a battery or multiple batteries
+    define the functions that return battery values
+    define discharging_battery() according to the number of batteries
+    NOTE: before calling this function, first check if the variable `initialized_battery` is false.
+]]
+function init_battery()
+    if not called_init_battery_once then
+        called_init_battery_once = true
+    else
+        initialized_battery = true
+    end
+
     local bat_indexes = {}
     local size = 0          -- how many batteries found
-    if parse("battery_percent BAT0") ~= nil then 
+
+    -- determine how many batteries by calling them (even if it will print out error messages)
+    local bt0 = parse("battery_percent BAT0")
+    local bt1 = parse("battery_percent BAT1")
+    local bt2 = parse("battery_percent BAT2")
+
+    if bt0 ~= nil and bt0 ~= "0" then 
         table.insert(bat_indexes, 0) 
         size = size + 1
     end
-    if parse("battery_percent BAT1") ~= nil then 
+    if bt1 ~= nil and bt1 ~= "0" then 
         table.insert(bat_indexes, 1) 
         size = size + 1
     end
-    if parse("battery_percent BAT2") ~= nil then 
+    if bt2 ~= nil and bt2 ~= "0" then 
         table.insert(bat_indexes, 2) 
         size = size + 1
     end
@@ -391,5 +437,4 @@ local function init_battery()
         end
     end
 end
-init_battery()
 

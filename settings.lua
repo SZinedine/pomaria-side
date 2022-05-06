@@ -24,6 +24,7 @@ change_color_on_threshold = true
 
 --[[
 CPU Cores (threads really)
+supported values: 2, 4, 8.
 ]]
 cpu_cores = 4
 

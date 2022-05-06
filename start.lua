@@ -6,48 +6,176 @@
 -- repository:  https://www.github.com/SZinedine/pomaria-side
 ----------------------------------
 
-
+local main_x      = 710
+local main_thickness = 1
 S = {
     line = {
-        thickness        = 1,
-        width1           = 310,
-        width2           = 465,
-        width3           = 620,
-        interval         = 40,
-        section_interval = 60,
-    },
-    cpu  = {
-        x                 = 710,
-        y                 = 100,
-        width             = 310,
-        y_interval        = 40,
-        y1                = 100,
-        y2                = 140,
-        y3                = 180,
-        y4                = 240,
-        y_total           = 280,
-        width_temp        = 620,
-        y_temp            = 60,
-        x_values          = 100 - 310 - 30,
+        thickness   = 1,
+        width1      = 310,
+        width2      = 465,
+        width3      = 620,
     },
     mem  = {
-        x                 = 710,
-        y_ram             = 340,
-        y_swap            = 380,
+        ram  = { 
+            x = main_x, y = 340, width = 620,
+            text = { x = 0, y = 0 },
+        },
+        swap = { 
+            x = main_x, y = 380, width = 310,
+            text = { x = 0, y = 0 },
+        },
     },
     disk = {
-        x                = 710,
-        y1               = 440,
-        y2               = 480,
+        first = {
+            x = main_x, y = 440, width = 310,
+            title = { x = 510, y = 430 },
+            indic = { x = 370, y = 440 },
+        },
+        second = {
+            x = main_x, y = 480, width = 310,
+            title = { x = 510, y = 470 },
+            indic = { x = 370, y = 480 },
+        },
     },
     net  = {
-        down_x            = 710,
-        down_y            = 530,
-        up_y              = 570,
-        text_x            = 710 - 620,
-        text_y            = 520,
+        down = {
+            x = main_x, y = 530, width = 310,
+            title = { x = 580, y = 520 },
+            indic = { x = 370, y = 530 },
+        },
+        up = {
+            x = main_x, y = 570, width = 310,
+            title = { x = 580, y = 560 },
+            indic = { x = 370, y = 570 },
+        },
+        list = {
+            x = 90, y = 520
+        }
     },
+    cpu = {
+        x = main_x, y = 100, width = 310,
+        processes = { x = 90, y = 100, interval = 20, number = 7, },
+        cores = {
+            _2cores = {
+                temperature = { 
+                    number = -1,   y = 60,   width = 620, max_value = 100,
+                    title = { name = "temperature", x = 620, y = 50, size = 12, },
+                    indic = { x = 60, y = 63, suffix = "°C", size = 12 },
+                },
+                core1 = {  
+                    number = 1,   y = 130,   width = 310, max_value = 100,
+                    title = { name = "cpu1", x = 670, y = 120, size = 12, },
+                    indic = { x = 380, y = 135, suffix = "%", size = 12 },
+                },
+                core2 = {
+                    number = 2,   y = 200,   width = 310, max_value = 100,
+                    title = { name = "cpu2", x = 670, y = 190, size = 12, },
+                    indic = { x = 380, y = 205, suffix = "%", size = 12 },
+                },
+                total = {
+                    number = 0,   y = 270,   width = 620, max_value = 100,
+                    title = { name = "total", x = 670, y = 260, size = 12, },
+                    indic = { x = 61, y = 275, suffix = "%", size = 12 },
+                },
+            },
+            _4cores = {
+                temperature = {
+                    number = -1,   y = 60,   width = 620, max_value = 100,
+                    title = { name = "temperature", x = 620, y = 50, size = 12, },
+                    indic = { x = 60, y = 63, suffix = "°C", size = 12 },
+                },
+                core1 = {
+                    number = 1,   y = 100,   width = 310, max_value = 100,
+                    title = { name = "cpu1", x = 670, y = 90, size = 12, },
+                    indic = { x = 380, y = 105, suffix = "%", size = 12 },
+                },
+                core2 = {
+                    number = 2,   y = 140,   width = 310, max_value = 100,
+                    title = { name = "cpu2", x = 670, y = 130,  },
+                    indic = { x = 380, y = 145, suffix = "%" },
+                },
+                core3 = {
+                    number = 3,   y = 180,   width = 310, max_value = 100,
+                    title = { name = "cpu3", x = 670, y = 170,  },
+                    indic = { x = 380, y = 185, suffix = "%" },
+                },
+                core4 = {
+                    number = 4,   y = 220,   width = 310, max_value = 100,
+                    title = { name = "cpu4", x = 670, y = 210,  },
+                    indic = { x = 380, y = 225, suffix = "%" },
+                },
+                total = {
+                    number = 0,   y = 270,   width = 620, max_value = 100,
+                    title = { name = "total", x = 670, y = 260,  },
+                    indic = { x = 61, y = 275, suffix = "%" },
+                },
+            },
+            _8cores = {
+                temperature = {
+                    number = -1,   y = 40,   width = 620, max_value = 100,
+                    title = { name = "temperature", x = 620, y = 30,  },
+                    indic = { x = 60, y = 43, suffix = "°C" },
+                },
+                core1 = { 
+                    number = 1,   y = 67,   width = 310, max_value = 100,
+                    title = { name = "cpu1", x = 670, y = 60,  },
+                    indic = { x = 380, y = 75, suffix = "%" },
+                },
+                core2 = { 
+                    number = 2,   y = 97,   width = 310, max_value = 100,
+                    title = { name = "cpu2", x = 670, y = 90,  },
+                    indic = { x = 380, y = 105, suffix = "%" },
+                },
+                core3 = { 
+                    number = 3,   y = 127,   width = 310, max_value = 100,
+                    title = { name = "cpu3", x = 670, y = 120,  },
+                    indic = { x = 380, y = 135, suffix = "%" },
+                },
+                core4 = { 
+                    number = 4,   y = 157,   width = 310, max_value = 100,
+                    title = { name = "cpu4", x = 670, y = 150,  },
+                    indic = { x = 380, y = 165, suffix = "%" },
+                },
+                core5 = {
+                    number = 5,   y = 187,   width = 310, max_value = 100,
+                    title = { name = "cpu5", x = 670, y = 180,  },
+                    indic = { x = 380, y = 195, suffix = "%" },
+                },
+                core6 = {
+                    number = 6,   y = 217,   width = 310, max_value = 100,
+                    title = { name = "cpu6", x = 670, y = 210,  },
+                    indic = { x = 380, y = 225, suffix = "%" },
+                },
+                core7 = {
+                    number = 7,   y = 247,   width = 310, max_value = 100,
+                    title = { name = "cpu7", x = 670, y = 240,  },
+                    indic = { x = 380, y = 255, suffix = "%" },
+                },
+                core8 = {
+                    number = 8,   y = 275,   width = 310, max_value = 100,
+                    title = { name = "cpu8", x = 670, y = 270,  },
+                    indic = { x = 380, y = 280, suffix = "%" },
+                },
+                total = { 
+                    number = 0,   y = 300,   width = 620, max_value = 100,
+                    title = { name = "total", x = 670, y = 295,  },
+                    indic = { x = 61, y = 305, suffix = "%" },
+                },
+            },
+        }
+    }
 }
+
+
+-- set the appropriate cpu object according to the chosen value for `cpu_cores`
+local ncores = nil
+if cpu_cores == 2      then ncores = S.cpu.cores._2cores
+elseif cpu_cores == 4  then ncores = S.cpu.cores._4cores
+elseif cpu_cores == 8  then ncores = S.cpu.cores._8cores
+else
+    print("ERROR. the provided value of cpu_cores is not valid. Defaulting to 4 cores")
+    ncores = S.cpu.cores._4cores
+end
 
 
 -- replace the content of the following function to create your own conky theme
@@ -62,39 +190,21 @@ function start()
 end
 
 
+function draw_single_cpu_core(core)
+    local val = nil
+    if core.number >= 0 then val = cpu_percent(core.number)
+    else val = cpu_temperature()
+    end
+    rectangle_rightleft(main_x, core.y , core.width, main_thickness, val, core.max_value, color_frompercent(tonumber(val)))
+    write(core.indic.x, core.indic.y, val .. core.indic.suffix, 12 , main_text_color)
+    write(core.title.x, core.title.y, core.title.name, 12, main_text_color)
+end
+
 function draw_cpu()
-    local acpitemp = cpu_temperature()
-    local cpu      = cpu_percent()
-    local cpu1     = cpu_percent(1)
-    local cpu2     = cpu_percent(2)
-    local cpu3     = cpu_percent(3)
-    local cpu4     = cpu_percent(4)
-
-    rectangle_rightleft(S.cpu.x, S.cpu.y_temp, S.cpu.width_temp, S.line.thickness, acpitemp, 100, color_frompercent(tonumber(acpitemp)))
-    rectangle_rightleft(S.cpu.x, S.cpu.y1, S.cpu.width, S.line.thickness, cpu1, 100, color_frompercent(tonumber(cpu1)))
-    rectangle_rightleft(S.cpu.x, S.cpu.y2, S.cpu.width, S.line.thickness, cpu2, 100, color_frompercent(tonumber(cpu2)))
-    rectangle_rightleft(S.cpu.x, S.cpu.y3, S.cpu.width, S.line.thickness, cpu3, 100, color_frompercent(tonumber(cpu3)))
-    rectangle_rightleft(S.cpu.x, S.cpu.y4, S.cpu.width, S.line.thickness, cpu4, 100, color_frompercent(tonumber(cpu4)))
-    rectangle_rightleft(S.cpu.x, S.cpu.y_total, S.cpu.width_temp, S.line.thickness, cpu, 100, color_frompercent(tonumber(cpu)))
-
-    -- cpu values
-    write(S.cpu.x-S.cpu.width_temp-35, S.cpu.y-S.cpu.y_interval+3, acpitemp .. "°C", 12, main_text_color)
-    write(S.cpu.x-S.cpu.width_temp-30, S.cpu.y_total, cpu .. "%", 12, main_text_color)
-    write(S.cpu.x_values, S.cpu.y1+5, cpu1 .. "%", 12, main_text_color)
-    write(S.cpu.x_values, S.cpu.y2+5, cpu2 .. "%", 12, main_text_color)
-    write(S.cpu.x_values, S.cpu.y3+5, cpu3 .. "%", 12, main_text_color)
-    write(S.cpu.x_values, S.cpu.y4+5, cpu4 .. "%", 12, main_text_color)
-
-    -- cpu titles
-    write(S.cpu.x-90, S.cpu.y_temp-10, "temperature", 12, main_text_color)
-    write(S.cpu.x-70, S.cpu.y_total-10, "total cpu", 12, main_text_color)
-    write(670, 90, "cpu1", 12, main_text_color)
-    write(670, 130, "cpu2", 12, main_text_color)
-    write(670, 170, "cpu3", 12, main_text_color)
-    write(670, 210, "cpu4", 12, main_text_color)
-
-    -- processes list by cpu consemption
-    write_list_proccesses_cpu(S.cpu.x-S.cpu.width*2, S.cpu.y, 20, 7, 12, main_text_color)
+    for i in pairs(ncores) do
+        draw_single_cpu_core(ncores[i])
+    end
+    write_list_proccesses_cpu(S.cpu.processes.x, S.cpu.processes.y, S.cpu.processes.interval, S.cpu.processes.number, 12, main_text_color)
 end
 
 
@@ -104,16 +214,15 @@ function draw_memory()
     local mem      = string.format("RAM: %s / %s", memory(), memory_max())
     local swp      = string.format("Swap: %s / %s", swap(), swap_max())
 
-    rectangle_rightleft(S.mem.x, S.mem.y_ram, S.line.width3, S.line.thickness, memperc, 100, color_frompercent(tonumber(memperc)))
-    rectangle_rightleft(S.mem.x, S.mem.y_swap, S.line.width1, S.line.thickness, swapperc, 100, color_frompercent(tonumber(swapperc)))
+    rectangle_rightleft(S.mem.ram.x, S.mem.ram.y, S.mem.ram.width, main_thickness, memperc, 100, color_frompercent(tonumber(memperc)))
+    rectangle_rightleft(S.mem.swap.x, S.mem.swap.y, S.mem.swap.width, main_thickness, swapperc, 100, color_frompercent(tonumber(swapperc)))
 
-    write(S.cpu.x-180, S.cpu.y_total+50, mem, 12, main_text_color)
-    write(S.cpu.x-180, S.cpu.y_total+90, swp, 12, main_text_color)
+    write(530, 330, mem, 12, main_text_color)
+    write(530, 370, swp, 12, main_text_color)
+    write(60,  340, memperc .. "%", 12, main_text_color)
+    write(370, 380, swapperc .. "%", 12, main_text_color)
 
-    write(S.cpu.x-S.line.width3-30, S.cpu.y_total+60, memperc .. "%", 12, main_text_color)
-    write(S.cpu.x-S.line.width1-30, S.cpu.y_total+100, swapperc .. "%", 12, main_text_color)
-
-    write_list_proccesses_mem(S.cpu.x-S.cpu.width*2, S.mem.y_swap-10, 20, 6, 12, main_text_color)
+    write_list_proccesses_mem(90, 370, 20, 6, 12, main_text_color)
 end
 
 
@@ -123,29 +232,28 @@ function draw_disks()
     local rtperc = fs_used_perc("/")
     local hmperc = fs_used_perc("/home")
 
-    rectangle_rightleft(S.disk.x, S.disk.y1, S.line.width1, S.line.thickness, rtperc, 100, color_frompercent(tonumber(rtperc)))
-    rectangle_rightleft(S.disk.x, S.disk.y2, S.line.width1, S.line.thickness, hmperc, 100, color_frompercent(tonumber(hmperc)))
+    rectangle_rightleft(S.disk.first.x, S.disk.first.y, S.disk.first.width, main_thickness, rtperc, 100, color_frompercent(tonumber(rtperc)))
+    rectangle_rightleft(S.disk.second.x, S.disk.second.y, S.disk.second.width, main_thickness, hmperc, 100, color_frompercent(tonumber(hmperc)))
 
-    write(S.disk.x-200, S.disk.y1-10, rt, 12, main_text_color)
-    write(S.disk.x-200, S.disk.y2-10, hm, 12, main_text_color)
-    write(S.disk.x-S.line.width1-30, S.disk.y1, rtperc .. "%", 12, main_text_color)
-    write(S.disk.x-S.line.width1-30, S.disk.y2, hmperc .. "%", 12, main_text_color)
+    write(S.disk.first.title.x,  S.disk.first.title.y, rt, 12, main_text_color)
+    write(S.disk.second.title.x, S.disk.second.title.y, hm, 12, main_text_color)
+    write(S.disk.first.indic.x, S.disk.first.indic.y, rtperc .. "%", 12, main_text_color)
+    write(S.disk.second.indic.x, S.disk.second.indic.y, hmperc .. "%", 12, main_text_color)
 end
 
 
 function draw_net()
-    rectangle_rightleft(S.net.down_x, S.net.down_y, S.line.width1, S.line.thickness, download_speed_kb(), download_rate_maximum, main_fg)
-    rectangle_rightleft(S.net.down_x, S.net.up_y, S.line.width1, S.line.thickness, upload_speed_kb(), upload_rate_maximum, main_fg)
+    rectangle_rightleft(S.net.down.x, S.net.down.y, S.net.down.width, main_thickness, download_speed_kb(), download_rate_maximum, main_fg)
+    rectangle_rightleft(S.net.up.x, S.net.up.y, S.net.up.width, main_thickness, upload_speed_kb(), upload_rate_maximum, main_fg)
 
-    write(S.net.down_x - 150, S.net.down_y-10, "download: ".. download_total(), 12, main_text_color)
-    write(S.net.down_x - 150, S.net.up_y-10, "upload: " .. upload_total(), 12, main_text_color)
-    write(S.net.down_x - S.line.width1-30, S.net.down_y, download_speed(), 12, main_text_color)
-    write(S.net.down_x - S.line.width1-30, S.net.up_y, upload_speed(), 12, main_text_color)
+    write(S.net.down.title.x, S.net.down.title.y, "download: ".. download_total(), 12, main_text_color)
+    write(S.net.up.title.x, S.net.up.title.y, "upload: " .. upload_total(), 12, main_text_color)
+    write(S.net.down.indic.x, S.net.down.indic.y, download_speed(), 12, main_text_color)
+    write(S.net.up.indic.x, S.net.up.indic.y, upload_speed(), 12, main_text_color)
 
     local netinfo = {}
     table.insert(netinfo, "SSID:        " .. ssid())
     table.insert(netinfo, "Wifi Signal: " .. wifi_signal() .. "%")
-
 
     if use_public_ip then
         if public_ip == nil or (updates()%public_ip_refresh_rate) == 0 then
@@ -155,7 +263,7 @@ function draw_net()
     end
     table.insert(netinfo, "Local IP:    " .. local_ip())
 
-    write_line_by_line(S.net.text_x, S.net.text_y, 20, netinfo, main_text_color, 12, false)
+    write_line_by_line(S.net.list.x, S.net.list.y, 20, netinfo, main_text_color, 12, false)
 end
 
 
@@ -163,8 +271,8 @@ function draw_battery()
     if not has_battery then return end
     local batperc = battery_percent()
     local bat_color = color_frompercent_reverse(tonumber(batperc))
-    rectangle_bottomup(30, 700, 670, S.line.thickness, batperc, 100, bat_color)
-    rectangle_bottomup(30, 700, 670, S.line.thickness, batperc, 100, bat_color)
+    rectangle_bottomup(30, 700, 670, main_thickness, batperc, 100, bat_color)
+    rectangle_bottomup(30, 700, 670, main_thickness, batperc, 100, bat_color)
     write(20, 20, batperc .. "%", 12, main_text_color)
     write(10, 720, "battery", 12, main_text_color)
 end
@@ -184,7 +292,7 @@ function draw_info()
         "    Read:  " .. diskio_read(""),
         "    Write: " .. diskio_write(""),
     }
-    write_line_by_line(S.net.text_x, 630, 20, vals, main_text_color, 12, false)
+    write_line_by_line(90, 630, 20, vals, main_text_color, 12, false)
 end
 
 
